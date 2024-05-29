@@ -1,0 +1,7 @@
+# Development tools
+ipython==8.24.0
+isort==5.13.2
+yapf==0.40.2
+
+# Core components
+transformers==4.41.1
