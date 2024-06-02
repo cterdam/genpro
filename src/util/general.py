@@ -3,9 +3,12 @@ import getpass
 import textwrap
 import uuid
 
+from yaml import safe_load
+
 __all__ = [
     "get_unique_id",
     "multiline",
+    "load_yaml",
 ]
 
 
@@ -30,3 +33,9 @@ def multiline(s: str) -> str:
         of each line in the original string.
     """
     return textwrap.dedent(s).replace("\n", " ").strip()
+
+
+def load_yaml(filepath) -> dict:
+    with open(filepath) as f:
+        result = safe_load(f)
+    return result
