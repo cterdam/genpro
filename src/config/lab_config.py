@@ -10,17 +10,17 @@ from pydantic import model_validator
 from pydantic import ValidationInfo
 from src.util import load_yaml
 
-from .general.config_general import ConfigGeneral
+from .general.lab_config_general import LabConfigGeneral
 
 __all__ = [
-    "Config",
+    "LabConfig",
 ]
 
 
-class Config(BaseModel):
+class LabConfig(BaseModel):
 
     general_file: str
-    general: ConfigGeneral = Field(default=None)
+    general: LabConfigGeneral = Field(default=None)
 
     @field_validator("general_file")
     @classmethod
@@ -30,5 +30,5 @@ class Config(BaseModel):
 
     @model_validator(mode="after")
     def load_configs(self) -> Self:
-        self.general = ConfigGeneral(**load_yaml(self.general_file))
+        self.general = LabConfigGeneral(**load_yaml(self.general_file))
         return self

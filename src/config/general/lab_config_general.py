@@ -5,11 +5,11 @@ from pydantic import Field
 from src.util import multiline
 
 __all__ = [
-    "ConfigGeneral",
+    "LabConfigGeneral",
 ]
 
 
-class ConfigGeneral(BaseModel):
+class LabConfigGeneral(BaseModel):
 
     project_name: str = Field(description="Name of the current project.")
 
