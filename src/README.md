@@ -1,6 +1,6 @@
 # 🧑‍💻 Lab source code
 
-## config
+## 🛠️ config
 
 - The config includes a number of components.
 - Each component is stored in a subdir of `src/config/`.
@@ -12,12 +12,12 @@
 - The `src.config` module exports an object, `config`, which is a `LabConfig`
   and contains all components as chosen in `src/config/select.yaml`.
 
-## data
+## 🗃️ data
 
-## eval
+## 📈 eval
 
-## model
+## 🧠 model
 
-## train
+## 🚂 train
 
-## util
+## ⛓️ util
