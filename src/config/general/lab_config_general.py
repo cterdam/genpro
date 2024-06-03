@@ -2,7 +2,8 @@
 
 from pydantic import BaseModel
 from pydantic import Field
-from src.conf.lab_config_base import LabConfigBase
+
+from src.config.lab_config_base import LabConfigBase
 from src.util import multiline
 
 __all__ = [
