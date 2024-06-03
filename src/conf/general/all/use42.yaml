@@ -1,0 +1,4 @@
+project_name: labtest
+python_seed: 42
+numpy_seed: 42
+torch_seed: 42

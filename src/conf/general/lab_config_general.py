@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel
 from pydantic import Field
+from src.conf.lab_config_base import LabConfigBase
 from src.util import multiline
 
 __all__ = [
@@ -9,7 +10,7 @@ __all__ = [
 ]
 
 
-class LabConfigGeneral(BaseModel):
+class LabConfigGeneral(LabConfigBase):
 
     project_name: str = Field(description="Name of the current project.")
 
