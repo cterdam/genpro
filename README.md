@@ -1,4 +1,4 @@
-# 🔬 Lab
+# 🔎 Lab
 
 Lab (**L**anguage **A**I **B**uilding) allows you to systematically manage many
 runs of training and evaluation of language models.
