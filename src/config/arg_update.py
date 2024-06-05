@@ -4,6 +4,7 @@ import argparse
 
 from src.util import get_type_name
 from src.util import load_yaml_var
+from src.util import multiline
 
 from .lab_config import LabConfig
 
@@ -15,7 +16,21 @@ __all__ = [
 def arg_update(config: LabConfig) -> LabConfig:
     """Update a LabConfig with command-line argument selections."""
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        prog="PROG",
+        usage="%(prog)s (--<opt_name> <opt_value>)*",
+        description=multiline("""
+            All opt values are taken as strings and parsed into expected types
+            in the same way `yaml` parses strings into Python objects.
+        """),
+    )
+
+    # Add dry run option
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="show all configured option values and exit",
+    )
 
     # Arg group for appointing alternative sources for components
     sources_group = parser.add_argument_group(
@@ -56,6 +71,7 @@ def arg_update(config: LabConfig) -> LabConfig:
 
     # Unset options are mapped to the value of None
     args_dict = vars(parser.parse_args())
+    dry_run = args_dict.pop("dry_run")
 
     # Load alternative sources for components
     for component_name in config.model_fields_set:
@@ -79,5 +95,10 @@ def arg_update(config: LabConfig) -> LabConfig:
             attr_name,
             load_yaml_var(arg_val),
         )
+
+    # If dry run, print all configs and exit
+    if dry_run:
+        print(config)
+        parser.exit()
 
     return config
