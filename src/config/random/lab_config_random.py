@@ -16,10 +16,12 @@ class LabConfigRandom(LabConfigBase):
         default=None,
         description=("Seed for Python's built-in random module."),
     )
+
     numpy_seed: int | None = Field(
         default=None,
         description=("Seed for Numpy."),
     )
+
     torch_seed: int | None = Field(
         default=None,
         description=("Seed for PyTorch for both CPU and GPU."),

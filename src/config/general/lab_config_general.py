@@ -11,4 +11,12 @@ __all__ = [
 class LabConfigGeneral(LabConfigBase):
     """Config about general experiment setup."""
 
-    project_name: str = Field(description="Name of the current project.")
+    project_name: str = Field(
+        default="labtest",
+        description="Name of the current project.",
+    )
+
+    run_name: str = Field(
+        default="run",
+        description="Name of the current run.",
+    )
