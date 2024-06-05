@@ -2,6 +2,8 @@
 
 import argparse
 
+from src.util import load_yaml_var
+
 from .lab_config import LabConfig
 
 __all__ = [
@@ -14,43 +16,67 @@ def arg_update(config: LabConfig) -> LabConfig:
 
     parser = argparse.ArgumentParser()
 
+    # Arg group for appointing alternative sources for components
+    sources_group = parser.add_argument_group(
+        title="sources",
+        description="Load alternative sources for config defaults.",
+    )
+
+    # Add options within each component
     for component_name in config.model_fields_set:
 
         if "_source" in component_name:
-            # Source file name, not config component instance
             continue
 
-        component = getattr(config, component_name)
-        component_doc = component.__class__.model_json_schema()["description"]
-
-        # Add argument group for each config component
-        this_group = parser.add_argument_group(
-            title=component_name,
-            description=component_doc,
+        sources_group.add_argument(
+            f"--{component_name}",
+            metavar=f"{component_name.upper()}_SOURCE",
+            required=False,
+            type=str,
+            help=f"Source for the {component_name} config component.",
         )
 
-        # Add each option in component as command-line arg in group
+        component = getattr(config, component_name)
+
+        # Arg group for each component
+        this_group = parser.add_argument_group(
+            title=component_name,
+            description=component.__class__.model_json_schema()["description"],
+        )
+
         for field_name, field_info in component.__fields__.items():
-
-            arg_name = f"--{component_name}/{field_name}"
-            arg_help = field_info.description
-            arg_type = field_info.annotation
-
             this_group.add_argument(
-                arg_name,
+                f"--{component_name}/{field_name}",
                 metavar=field_name.upper(),
                 required=False,
                 type=str,
-                help=arg_help,
+                help=field_info.description,
             )
 
-    args = parser.parse_args()
+    # Unset options are mapped to the value of None
+    args_dict = vars(parser.parse_args())
+
+    # Load alternative sources for components
+    for component_name in config.model_fields_set:
+        if "_source" in component_name:
+            continue
+        if args_dict[component_name] is not None:
+            setattr(
+                config,
+                f"{component_name}_source",
+                args_dict[component_name],
+            )
+        del args_dict[component_name]
+
+    # Load each option in components
+    for arg_name, arg_val in args_dict.items():
+        if arg_val is None:
+            continue
+        component_name, attr_name = arg_name.split("/", 1)
+        setattr(
+            getattr(config, component_name),
+            attr_name,
+            load_yaml_var(arg_val),
+        )
 
     return config
-
-    # add load file options
-
-    # When parsing is done, first load relevant files for defaults
-
-    # Then, args that are not None are input by user
-    # Parse these one by one to load into config

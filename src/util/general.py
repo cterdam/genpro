@@ -1,6 +1,7 @@
 from datetime import datetime
 import getpass
 import textwrap
+from typing import Any
 import uuid
 
 from yaml import safe_load
@@ -8,7 +9,8 @@ from yaml import safe_load
 __all__ = [
     "get_unique_id",
     "multiline",
-    "load_yaml",
+    "load_yaml_file",
+    "load_yaml_var",
 ]
 
 
@@ -35,7 +37,12 @@ def multiline(s: str) -> str:
     return textwrap.dedent(s).replace("\n", " ").strip()
 
 
-def load_yaml(filepath) -> dict:
+def load_yaml_file(filepath) -> dict:
     with open(filepath) as f:
         result = safe_load(f)
     return result
+
+
+def load_yaml_var(v: str) -> Any:
+    """Given a string, interpret it as a variable using yaml's load logic."""
+    return safe_load(f"key: {v}")["key"]

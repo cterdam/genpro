@@ -8,7 +8,7 @@ from pydantic import field_validator
 from pydantic import ValidationInfo
 
 from src.config.lab_config_base import LabConfigBase
-from src.util import load_yaml
+from src.util import load_yaml_file
 
 from .general.lab_config_general import LabConfigGeneral
 
@@ -39,10 +39,11 @@ class LabConfig(LabConfigBase):
     def __init__(self, /, **data: Any) -> None:
         """Perform init and load each config file needed."""
         super().__init__(**data)
-        self.general = LabConfigGeneral(**load_yaml(self.general_source))
+        self.general = LabConfigGeneral(**load_yaml_file(self.general_source))
 
     def __setattr__(self, name: str, value: Any, /) -> None:
         """Reload config file if a source name is updated."""
         super().__setattr__(name, value)
         if name == "general_source":
-            self.general = LabConfigGeneral(**load_yaml(self.general_source))
+            self.general = LabConfigGeneral(
+                **load_yaml_file(self.general_source))
