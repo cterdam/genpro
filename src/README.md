@@ -22,6 +22,8 @@ A config value for an option can potentially come from a lot of places. In
 decreasing levels of precedence, these are:
 
 - Run-time command-line argument `--<component_name>/<option_name> <value>`
+  - All values are taken as strings and parsed into expected types in the same
+    way `yaml` parses strings into Python objects.
   - **This has the highest precedence.**
 - Source selected in a command-line argument `--<component_name> <source_name>`
 - Source selected in `src/config/select.yaml`
@@ -32,6 +34,7 @@ decreasing levels of precedence, these are:
 
 - Make the subdir `src/config/<new_comp_name>`. In it:
   - `lab_config_<new_comp_name>.py` defines the schema.
+    - This needs to subclass `LabConfigBase`.
   - `all/` contains at least one yaml file which satisfies the schema.
     - There should be a `default.yaml` which just writes `{}`, so it uses the
       default value for all options.

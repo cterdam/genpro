@@ -2,6 +2,7 @@
 
 import argparse
 
+from src.util import get_type_name
 from src.util import load_yaml_var
 
 from .lab_config import LabConfig
@@ -23,17 +24,17 @@ def arg_update(config: LabConfig) -> LabConfig:
     )
 
     # Add options within each component
-    for component_name in config.model_fields_set:
+    for component_name in config.model_fields:
 
         if "_source" in component_name:
             continue
 
         sources_group.add_argument(
             f"--{component_name}",
-            metavar=f"{component_name.upper()}_SOURCE",
+            metavar=f"[str]",
             required=False,
             type=str,
-            help=f"Source for the {component_name} config component.",
+            help=f"Source name for the {component_name} config component.",
         )
 
         component = getattr(config, component_name)
@@ -41,13 +42,13 @@ def arg_update(config: LabConfig) -> LabConfig:
         # Arg group for each component
         this_group = parser.add_argument_group(
             title=component_name,
-            description=component.__class__.model_json_schema()["description"],
+            description=type(component).model_json_schema()["description"],
         )
 
-        for field_name, field_info in component.__fields__.items():
+        for field_name, field_info in component.model_fields.items():
             this_group.add_argument(
                 f"--{component_name}/{field_name}",
-                metavar=field_name.upper(),
+                metavar=f"[{get_type_name(field_info.annotation)}]",
                 required=False,
                 type=str,
                 help=field_info.description,

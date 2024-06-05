@@ -25,10 +25,10 @@ class LabConfig(LabConfigBase):
     """
 
     general_source: str
-    general: LabConfigGeneral = Field(default=None)
+    general: LabConfigGeneral | None = Field(default=None)
 
     random_source: str
-    random: LabConfigRandom = Field(default=None)
+    random: LabConfigRandom | None = Field(default=None)
 
     def __init__(self, /, **data: Any) -> None:
         """Perform init and load each config file needed."""

@@ -1,6 +1,7 @@
 from datetime import datetime
 import getpass
 import textwrap
+from types import UnionType
 from typing import Any
 import uuid
 
@@ -11,6 +12,7 @@ __all__ = [
     "multiline",
     "load_yaml_file",
     "load_yaml_var",
+    "get_type_name",
 ]
 
 
@@ -46,3 +48,8 @@ def load_yaml_file(filepath) -> dict:
 def load_yaml_var(v: str) -> Any:
     """Given a string, interpret it as a variable using yaml's load logic."""
     return safe_load(f"key: {v}")["key"]
+
+
+def get_type_name(t: type | UnionType) -> str:
+    """Given a type or a union type, infer the class name in str."""
+    return str(t) if isinstance(t, UnionType) else t.__name__
