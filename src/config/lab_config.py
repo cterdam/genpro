@@ -6,11 +6,11 @@ from typing import Any
 from pydantic import Field
 from pydantic import field_validator
 from pydantic import ValidationInfo
-
 from src.config.lab_config_base import LabConfigBase
 from src.util import load_yaml_file
 
 from .general.lab_config_general import LabConfigGeneral
+from .random.lab_config_random import LabConfigRandom
 
 __all__ = [
     "LabConfig",
@@ -20,19 +20,26 @@ __all__ = [
 class LabConfig(LabConfigBase):
     """Overall config, contains all components.
 
-    Setting the `{component_name}_source` attr with a valid source name will auto
-    load the corresponding yaml file into the `{component_name}` attr.
+    Setting the `{component_name}_source` attr with a valid source name will
+    auto load the corresponding yaml file into the `{component_name}` attr.
     """
 
     general_source: str
     general: LabConfigGeneral = Field(default=None)
 
+    random_source: str
+    random: LabConfigRandom = Field(default=None)
+
     def __init__(self, /, **data: Any) -> None:
         """Perform init and load each config file needed."""
         super().__init__(**data)
         self.general = LabConfigGeneral(**load_yaml_file(self.general_source))
+        self.random = LabConfigRandom(**load_yaml_file(self.random_source))
 
-    @field_validator("general_source")
+    @field_validator(
+        "general_source",
+        "random_source",
+    )
     @classmethod
     def expand_path(cls, val: str, info: ValidationInfo) -> str:
         """Convert a source name to the corresponding yaml file path."""
