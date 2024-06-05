@@ -13,5 +13,6 @@ pip install -r requirements.txt
 
 ## TODO
 
-- pretty print config
+- load all yaml vars at once
+- use logs instead of printing
 - save logs upon exit - use `atexit`

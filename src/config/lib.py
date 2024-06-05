@@ -10,6 +10,7 @@ from .lab_config import LabConfig
 
 __all__ = [
     "arg_update",
+    "setup",
 ]
 
 
@@ -100,3 +101,18 @@ def arg_update(config: LabConfig) -> LabConfig:
         parser.exit()
 
     return config
+
+
+def setup(config: LabConfig):
+    """Process config options that require setup."""
+
+    # Random
+    if config.random.python_seed is not None:
+        import random
+        random.seed(config.random.python_seed)
+    if config.random.numpy_seed is not None:
+        import numpy as np
+        np.random.seed(config.random.numpy_seed)
+    if config.random.torch_seed is not None:
+        import torch
+        torch.manual_seed(config.random.torch_seed)

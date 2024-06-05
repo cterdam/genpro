@@ -5,7 +5,8 @@ from importlib.resources import files
 from src.util import load_yaml_file
 
 from .lab_config import LabConfig
-from .arg_update import arg_update
+from .lib import arg_update
+from .lib import setup
 
 __all__ = [
     "config",
@@ -18,3 +19,4 @@ default_selection = {
 }
 default_config = LabConfig(**default_selection)
 config = arg_update(default_config)
+setup(config)
