@@ -1,8 +1,9 @@
 from datetime import datetime
 import getpass
 import textwrap
+from types import NoneType
 from types import UnionType
-from typing import Any
+from typing import Any, get_args
 import uuid
 
 from yaml import safe_load
@@ -13,6 +14,7 @@ __all__ = [
     "load_yaml_file",
     "load_yaml_var",
     "get_type_name",
+    "denonify",
 ]
 
 
@@ -53,3 +55,13 @@ def load_yaml_var(v: str) -> Any:
 def get_type_name(t: type | UnionType) -> str:
     """Given a type or a union type, infer the class name in str."""
     return str(t) if isinstance(t, UnionType) else t.__name__
+
+
+def denonify(ut: UnionType) -> type:
+    """Given an optional type, return the non-None base type(s) in it."""
+    union_args = get_args(ut)
+    non_none_types = [arg for arg in union_args if arg is not NoneType]
+    if len(non_none_types) == 1:
+        return non_none_types[0]
+    elif len(non_none_types) > 1:
+        return Union[tuple(non_none_types)]

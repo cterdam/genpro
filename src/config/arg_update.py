@@ -32,7 +32,7 @@ def arg_update(config: LabConfig) -> LabConfig:
         help="show all configured option values and exit",
     )
 
-    # Arg group for appointing alternative sources for components
+    # Arg group for selecting alternative sources for components
     sources_group = parser.add_argument_group(
         title="sources",
         description="Load alternative sources for config defaults.",
@@ -71,10 +71,9 @@ def arg_update(config: LabConfig) -> LabConfig:
 
     # Unset options are mapped to the value of None
     args_dict = vars(parser.parse_args())
-    dry_run = args_dict.pop("dry_run")
 
     # Load alternative sources for components
-    for component_name in config.model_fields_set:
+    for component_name in config.model_fields:
         if "_source" in component_name:
             continue
         if args_dict[component_name] is not None:
@@ -83,11 +82,10 @@ def arg_update(config: LabConfig) -> LabConfig:
                 f"{component_name}_source",
                 args_dict[component_name],
             )
-        del args_dict[component_name]
 
     # Load each option in components
     for arg_name, arg_val in args_dict.items():
-        if arg_val is None:
+        if "/" not in arg_name or arg_val is None:
             continue
         component_name, attr_name = arg_name.split("/", 1)
         setattr(
@@ -97,7 +95,7 @@ def arg_update(config: LabConfig) -> LabConfig:
         )
 
     # If dry run, print all configs and exit
-    if dry_run:
+    if args_dict["dry_run"]:
         print(config)
         parser.exit()
 

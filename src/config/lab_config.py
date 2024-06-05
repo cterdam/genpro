@@ -3,10 +3,12 @@
 from importlib.resources import files
 from typing import Any
 
+from prettytable import PrettyTable
 from pydantic import Field
 from pydantic import field_validator
 from pydantic import ValidationInfo
 from src.config.lab_config_base import LabConfigBase
+from src.util import denonify
 from src.util import load_yaml_file
 
 from .general.lab_config_general import LabConfigGeneral
@@ -46,7 +48,7 @@ class LabConfig(LabConfigBase):
         dirname = info.field_name.replace("_source", "")
         filename = files(f"src.config.{dirname}.all") / f"{val}.yaml"
         assert filename.is_file(), f"Did not find file at {filename}."
-        return filename
+        return str(filename)
 
     def __setattr__(self, name: str, value: Any, /) -> None:
         """Reload config file if a source name is updated."""
@@ -54,6 +56,29 @@ class LabConfig(LabConfigBase):
         # If changing the source of a component, reload the config file
         if "_source" in name:
             target_name = name.replace("_source", "")
-            target_class = self.__fields__[target_name].annotation
+            target_class = denonify(self.__fields__[target_name].annotation)
             file_loc = vars(self)[name]
             vars(self)[target_name] = target_class(**load_yaml_file(file_loc))
+
+    def __str__(self) -> str:
+        """Print a pretty table."""
+
+        table = PrettyTable()
+
+        table.title = "Config"
+        table.field_names = ["COMPONENT", "OPTION NAME", "VALUE"]
+        table.align = "l"
+
+        for comp_name in self.model_fields:
+
+            if "_source" in comp_name:
+                continue
+
+            comp_dict = getattr(self, comp_name).model_dump()
+            rows = [["", key, val] for key, val in comp_dict.items()]
+            rows[0][0] = comp_name
+            last_row = rows.pop(-1)
+            table.add_rows(rows)
+            table.add_row(last_row, divider=True)
+
+        return table.get_string()
