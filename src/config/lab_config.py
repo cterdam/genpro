@@ -27,6 +27,11 @@ class LabConfig(LabConfigBase):
     general_source: str
     general: LabConfigGeneral = Field(default=None)
 
+    def __init__(self, /, **data: Any) -> None:
+        """Perform init and load each config file needed."""
+        super().__init__(**data)
+        self.general = LabConfigGeneral(**load_yaml_file(self.general_source))
+
     @field_validator("general_source")
     @classmethod
     def expand_path(cls, val: str, info: ValidationInfo) -> str:
@@ -36,14 +41,12 @@ class LabConfig(LabConfigBase):
         assert filename.is_file(), f"Did not find file at {filename}."
         return filename
 
-    def __init__(self, /, **data: Any) -> None:
-        """Perform init and load each config file needed."""
-        super().__init__(**data)
-        self.general = LabConfigGeneral(**load_yaml_file(self.general_source))
-
     def __setattr__(self, name: str, value: Any, /) -> None:
         """Reload config file if a source name is updated."""
         super().__setattr__(name, value)
-        if name == "general_source":
-            self.general = LabConfigGeneral(
-                **load_yaml_file(self.general_source))
+        # If changing the source of a component, reload the config file
+        if "_source" in name:
+            target_name = name.replace("_source", "")
+            target_class = self.__fields__[target_name].annotation
+            file_loc = vars(self)[name]
+            vars(self)[target_name] = target_class(**load_yaml_file(file_loc))
