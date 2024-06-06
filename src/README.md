@@ -50,16 +50,17 @@ And that's it!
 ### Adding a new option within an existent component
 
 - Modify the component schema to register the new option as a field.
-  - Provide a default value and a description.
+  - Provide a meaningfully restrictive type, a default value, and a description.
+- If this value necessitates postprocessing, modify `src/config/lib.py/setup`.
 
 And that's it!
 
-## 🗃️ data
+## 🧮 data
 
-## 📈 eval
+## 📐 eval
 
-## 🧠 model
+## 🪆 model
 
 ## 🚂 train
 
-## ⛓️ util
+## 🔗 util

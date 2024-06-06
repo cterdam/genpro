@@ -1,4 +1,4 @@
-# 🔎 Lab
+# 💈 Lab
 
 Lab (**L**anguage **A**I **B**uilding) allows you to systematically manage many
 runs of training and evaluation of language models.
@@ -11,8 +11,14 @@ conda activate lab
 pip install -r requirements.txt
 ```
 
+## 🕹️ Use 
+
+- `py -m src.train` to directly start using the default configs.
+- Add `-h` to see all configurable options.
+- Add `--dry-run` to print out configured option values and exit.
+
+
 ## TODO
 
-- load all yaml vars at once
 - use logs instead of printing
 - save logs upon exit - use `atexit`
