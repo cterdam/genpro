@@ -50,7 +50,8 @@ And that's it!
 ### Adding a new option within an existent component
 
 - Modify the component schema to register the new option as a field.
-  - Provide a meaningfully restrictive type, a default value, and a description.
+  - If it can only take a few values, use `Literal` as its type.
+  - If this is a shell variable, its default factory should fetch it from shell.
 - If this value necessitates postprocessing, modify `src/config/lib.py/setup`.
 
 And that's it!

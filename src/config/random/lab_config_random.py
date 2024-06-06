@@ -1,10 +1,12 @@
 """Config for random states."""
 
+import os
+from typing import Literal
+
 from pydantic import Field
+
 from src.config.lab_config_base import LabConfigBase
 from src.util import multiline
-
-from typing import Literal
 
 __all__ = [
     "LabConfigRandom",
@@ -51,7 +53,8 @@ class LabConfigRandom(LabConfigBase):
     )
 
     cublas_workspace_config: Literal[":16:8", ":4096:8"] | None = Field(
-        default=None,
+        default_factory=\
+                lambda: os.environ.get("CUBLAS_WORKSPACE_CONFIG", None),
         description=multiline(f"""
             If set, cuBLAS will give deterministic behavior even with multiple
             concurrent streams sharing a single cuBLAS handle. Check

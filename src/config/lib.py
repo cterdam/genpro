@@ -1,4 +1,4 @@
-"""Update a LabConfig with argparse selections."""
+"""Various pre- and pro- processing routines with config args."""
 
 import argparse
 

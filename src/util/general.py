@@ -88,15 +88,16 @@ def get_random_state_setter(config) -> Callable[[], None]:
         A function that sets the various random state according to the config.
     """
 
+    ###########################################################################
     # Lazy import on time-consuming imports
     torch_args = (config.random.torch_seed,
                   config.random.torch_backends_cudnn_benchmark,
                   config.random.torch_use_deterministic_algorithms)
     if any([optval is not None for optval in torch_args]):
         import torch
-
     if config.random.numpy_seed is not None:
         import numpy as np
+    ###########################################################################
 
     def random_state_setter():
 
@@ -114,7 +115,7 @@ def get_random_state_setter(config) -> Callable[[], None]:
             torch.use_deterministic_algorithms(
                 config.random.torch_use_deterministic_algorithms)
         if config.random.cublas_workspace_config is not None:
-            os.environ['CUBLAS_WORKSPACE_CONFIG'] = \
+            os.environ["CUBLAS_WORKSPACE_CONFIG"] = \
                     config.random.cublas_workspace_config
 
     return random_state_setter
