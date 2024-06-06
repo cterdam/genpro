@@ -12,7 +12,7 @@ class LabConfigGeneral(LabConfigBase):
     """Config about general experiment setup."""
 
     project_name: str = Field(
-        default="labtest",
+        default="lab",
         description="Name of the current project.",
     )
 

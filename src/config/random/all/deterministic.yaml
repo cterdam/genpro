@@ -1,0 +1,6 @@
+python_seed: 42
+numpy_seed: 42
+torch_seed: 42
+torch_backends_cudnn_benchmark: False
+torch_use_deterministic_algorithms: True
+cublas_workspace_config: :4096:8

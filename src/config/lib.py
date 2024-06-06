@@ -2,6 +2,7 @@
 
 import argparse
 
+from src.util import get_random_state_setter
 from src.util import get_type_name
 from src.util import load_yaml_var
 from src.util import multiline
@@ -21,8 +22,9 @@ def arg_update(config: LabConfig) -> LabConfig:
         prog="PROG",
         usage="%(prog)s (--<opt_name> <opt_value>)*",
         description=multiline("""
-            All opt values are taken as strings and parsed into expected types
-            in the same way `yaml` parses strings into Python objects.
+            All opt values optional. Values are taken as strings and parsed into
+            expected types in the same way `yaml` parses strings into Python
+            objects.
         """),
     )
 
@@ -106,13 +108,5 @@ def arg_update(config: LabConfig) -> LabConfig:
 def setup(config: LabConfig):
     """Process config options that require setup."""
 
-    # Random
-    if config.random.python_seed is not None:
-        import random
-        random.seed(config.random.python_seed)
-    if config.random.numpy_seed is not None:
-        import numpy as np
-        np.random.seed(config.random.numpy_seed)
-    if config.random.torch_seed is not None:
-        import torch
-        torch.manual_seed(config.random.torch_seed)
+    # Set up random state
+    get_random_state_setter(config)()

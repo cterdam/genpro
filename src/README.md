@@ -40,7 +40,7 @@ decreasing levels of precedence, these are:
       default value for all options.
 - In `src/config/lab_config.py`, modify `LabConfig`.
   - Add the `<new_comp_name>` field.
-  - Add the `<new_comp_name>_source` field.
+  - Add the `<new_comp_name_source>` field.
     - Register it to the field validator `expand_path`.
   - Modify the `__init__` method to initialize the `<new_comp_name>` field.
 - Modify `select.yaml` to select a source for this new component.

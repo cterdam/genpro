@@ -1,9 +1,11 @@
 from datetime import datetime
 import getpass
+import os
+import random
 import textwrap
 from types import NoneType
 from types import UnionType
-from typing import Any, get_args
+from typing import _UnionGenericAlias, Any, Callable, get_args
 import uuid
 
 from yaml import safe_load
@@ -15,6 +17,7 @@ __all__ = [
     "load_yaml_var",
     "get_type_name",
     "denonify",
+    "get_random_state_setter",
 ]
 
 
@@ -28,7 +31,7 @@ def get_unique_id() -> str:
     return unique_id
 
 
-def multiline(s: str) -> str:
+def multiline(s: str, is_url: bool = False) -> str:
     """Correctly connect a multiline string.
 
     Args:
@@ -38,7 +41,10 @@ def multiline(s: str) -> str:
         str: A string formed by removing all common whitespaces near the start
         of each line in the original string.
     """
-    return textwrap.dedent(s).replace("\n", " ").strip()
+    result = textwrap.dedent(s).replace("\n", " ").strip()
+    if is_url:
+        result = result.replace(" ", "")
+    return result
 
 
 def load_yaml_file(filepath) -> dict:
@@ -54,7 +60,12 @@ def load_yaml_var(v: str) -> Any:
 
 def get_type_name(t: type | UnionType) -> str:
     """Given a type or a union type, infer the class name in str."""
-    return str(t) if isinstance(t, UnionType) else t.__name__
+    if isinstance(t, UnionType) or isinstance(t, _UnionGenericAlias):
+        # UnionType -> int | None
+        # _UnionGenericAlias -> typing.Optional[int]
+        return str(t)
+    else:
+        return t.__name__
 
 
 def denonify(ut: UnionType) -> type:
@@ -65,3 +76,45 @@ def denonify(ut: UnionType) -> type:
         return non_none_types[0]
     elif len(non_none_types) > 1:
         return Union[tuple(non_none_types)]
+
+
+def get_random_state_setter(config) -> Callable[[], None]:
+    """Given the lab config, return a function that sets the random state.
+
+    Arguments:
+        config (LabConfig)
+
+    Returns (Callable[[], None]):
+        A function that sets the various random state according to the config.
+    """
+
+    # Lazy import on time-consuming imports
+    torch_args = (config.random.torch_seed,
+                  config.random.torch_backends_cudnn_benchmark,
+                  config.random.torch_use_deterministic_algorithms)
+    if any([optval is not None for optval in torch_args]):
+        import torch
+
+    if config.random.numpy_seed is not None:
+        import numpy as np
+
+    def random_state_setter():
+
+        # Set each option
+        if config.random.python_seed is not None:
+            random.seed(config.random.python_seed)
+        if config.random.numpy_seed is not None:
+            np.random.seed(config.random.numpy_seed)
+        if config.random.torch_seed is not None:
+            torch.manual_seed(config.random.torch_seed)
+        if config.random.torch_backends_cudnn_benchmark is not None:
+            torch.backends.cudnn.benchmark = \
+                    config.random.torch_backends_cudnn_benchmark
+        if config.random.torch_use_deterministic_algorithms is not None:
+            torch.use_deterministic_algorithms(
+                config.random.torch_use_deterministic_algorithms)
+        if config.random.cublas_workspace_config is not None:
+            os.environ['CUBLAS_WORKSPACE_CONFIG'] = \
+                    config.random.cublas_workspace_config
+
+    return random_state_setter
