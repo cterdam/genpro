@@ -22,3 +22,4 @@ pip install -r requirements.txt
 
 - use logs instead of printing
 - save logs upon exit - use `atexit`
+- compute SHA256 sum of each model and write a file when uploading
