@@ -1,6 +1,6 @@
 # Development
 black==24.4.2
-ipython==8.24.0
+ipython==8.25.0
 
 # Data
 pydantic==2.7.2
