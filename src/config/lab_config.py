@@ -4,15 +4,13 @@ from importlib.resources import files
 from typing import Any
 
 from prettytable import PrettyTable
-from pydantic import Field
-from pydantic import field_validator
-from pydantic import ValidationInfo
-from src.config.lab_config_base import LabConfigBase
-from src.util import denonify
-from src.util import load_yaml_file
+from pydantic import Field, ValidationInfo, field_validator
 
-from .general.lab_config_general import LabConfigGeneral
-from .random.lab_config_random import LabConfigRandom
+from src.config.lab_config_base import LabConfigBase
+from src.util import denonify, load_yaml_file
+
+from .groups.general.lab_config_general import LabConfigGeneral
+from .groups.random.lab_config_random import LabConfigRandom
 
 __all__ = [
     "LabConfig",
@@ -20,10 +18,10 @@ __all__ = [
 
 
 class LabConfig(LabConfigBase):
-    """Overall config, contains all components.
+    """Overall config, contains all config groups.
 
-    Setting the `{component_name}_source` attr with a valid source name will
-    auto load the corresponding yaml file into the `{component_name}` attr.
+    Setting the `{group_name}_source` attr with a valid source name will
+    auto load the corresponding yaml file into the `{group_name}` attr.
     """
 
     general_source: str
@@ -45,20 +43,20 @@ class LabConfig(LabConfigBase):
     @classmethod
     def expand_path(cls, val: str, info: ValidationInfo) -> str:
         """Convert a source name to the corresponding yaml file path."""
-        dirname = info.field_name.replace("_source", "")
-        filename = files(f"src.config.{dirname}.all") / f"{val}.yaml"
+        group_name = info.field_name.replace("_source", "")
+        filename = files(f"src.config.groups.{group_name}.all") / f"{val}.yaml"
         assert filename.is_file(), f"Did not find file at {filename}."
         return str(filename)
 
     def __setattr__(self, name: str, value: Any, /) -> None:
         """Reload config file if a source name is updated."""
         super().__setattr__(name, value)
-        # If changing the source of a component, reload the config file
+        # If changing the source name of a group, load the corresponding config file
         if "_source" in name:
-            target_name = name.replace("_source", "")
-            target_class = denonify(self.__fields__[target_name].annotation)
+            group_name = name.replace("_source", "")
+            group_class = denonify(self.__fields__[group_name].annotation)
             file_loc = vars(self)[name]
-            vars(self)[target_name] = target_class(**load_yaml_file(file_loc))
+            vars(self)[group_name] = group_class(**load_yaml_file(file_loc))
 
     def __str__(self) -> str:
         """Print a pretty table."""
@@ -66,17 +64,18 @@ class LabConfig(LabConfigBase):
         table = PrettyTable()
 
         table.title = "Config"
-        table.field_names = ["COMPONENT", "OPTION NAME", "VALUE"]
+        table.field_names = ["GROUP", "OPTION", "VALUE"]
         table.align = "l"
 
-        for comp_name in self.model_fields:
+        for group_name in self.model_fields:
 
-            if "_source" in comp_name:
+            if "_source" in group_name:
+                # Not a config group object
                 continue
 
-            comp_dict = getattr(self, comp_name).model_dump()
-            rows = [["", key, val] for key, val in comp_dict.items()]
-            rows[0][0] = comp_name
+            this_group_dict = getattr(self, group_name).model_dump()
+            rows = [["", key, val] for key, val in this_group_dict.items()]
+            rows[0][0] = group_name
             last_row = rows.pop(-1)
             table.add_rows(rows)
             table.add_row(last_row, divider=True)

@@ -1,6 +1,7 @@
 """Config about general experiment setup."""
 
 from pydantic import Field
+
 from src.config.lab_config_base import LabConfigBase
 
 __all__ = [
@@ -9,7 +10,7 @@ __all__ = [
 
 
 class LabConfigGeneral(LabConfigBase):
-    """Config about general experiment setup."""
+    """Config about the general experiment setup."""
 
     project_name: str = Field(
         default="lab",

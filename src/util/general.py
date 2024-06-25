@@ -3,12 +3,12 @@ import getpass
 import os
 import random
 import textwrap
-from types import NoneType
-from types import UnionType
-from typing import _UnionGenericAlias, Any, Callable, get_args
+from types import NoneType, UnionType
+from typing import Any, Callable, Type, Union, _UnionGenericAlias, get_args
 import uuid
 
 from yaml import safe_load
+
 
 __all__ = [
     "get_unique_id",
@@ -68,14 +68,17 @@ def get_type_name(t: type | UnionType) -> str:
         return t.__name__
 
 
-def denonify(ut: UnionType) -> type:
-    """Given an optional type, return the non-None base type(s) in it."""
+def denonify(ut: UnionType) -> NoneType | Type | UnionType:
+    """Given a union type, return the non-None base type(s) in it."""
     union_args = get_args(ut)
     non_none_types = [arg for arg in union_args if arg is not NoneType]
-    if len(non_none_types) == 1:
-        return non_none_types[0]
-    elif len(non_none_types) > 1:
-        return Union[tuple(non_none_types)]
+    match non_none_types:
+        case []:
+            return None
+        case [t]:
+            return t
+        case _:
+            return Union[tuple(non_none_types)]
 
 
 def get_random_state_setter(config) -> Callable[[], None]:
@@ -90,9 +93,11 @@ def get_random_state_setter(config) -> Callable[[], None]:
 
     ###########################################################################
     # Lazy import on time-consuming imports
-    torch_args = (config.random.torch_seed,
-                  config.random.torch_backends_cudnn_benchmark,
-                  config.random.torch_use_deterministic_algorithms)
+    torch_args = (
+        config.random.torch_seed,
+        config.random.torch_backends_cudnn_benchmark,
+        config.random.torch_use_deterministic_algorithms,
+    )
     if any([optval is not None for optval in torch_args]):
         import torch
     if config.random.numpy_seed is not None:
@@ -109,13 +114,16 @@ def get_random_state_setter(config) -> Callable[[], None]:
         if config.random.torch_seed is not None:
             torch.manual_seed(config.random.torch_seed)
         if config.random.torch_backends_cudnn_benchmark is not None:
-            torch.backends.cudnn.benchmark = \
-                    config.random.torch_backends_cudnn_benchmark
+            torch.backends.cudnn.benchmark = (
+                config.random.torch_backends_cudnn_benchmark
+            )
         if config.random.torch_use_deterministic_algorithms is not None:
             torch.use_deterministic_algorithms(
-                config.random.torch_use_deterministic_algorithms)
+                config.random.torch_use_deterministic_algorithms
+            )
         if config.random.cublas_workspace_config is not None:
-            os.environ["CUBLAS_WORKSPACE_CONFIG"] = \
-                    config.random.cublas_workspace_config
+            os.environ["CUBLAS_WORKSPACE_CONFIG"] = (
+                config.random.cublas_workspace_config
+            )
 
     return random_state_setter
