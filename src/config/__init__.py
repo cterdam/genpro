@@ -4,8 +4,9 @@ from importlib.resources import files
 
 from src.util import load_yaml_file
 
+from .arg_update import arg_update
 from .lab_config import LabConfig
-from .lib import arg_update, setup
+from .setup import setup
 
 __all__ = [
     "config",

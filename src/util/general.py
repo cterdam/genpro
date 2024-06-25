@@ -38,8 +38,8 @@ def multiline(s: str, is_url: bool = False) -> str:
         s (str): A string, usually formed with three double quotes.
 
     Returns:
-        str: A string formed by removing all common whitespaces near the start
-        of each line in the original string.
+        str: A string formed by removing all common whitespaces near the start of each
+        line in the original string.
     """
     result = textwrap.dedent(s).replace("\n", " ").strip()
     if is_url:
@@ -91,7 +91,7 @@ def get_random_state_setter(config) -> Callable[[], None]:
         A function that sets the various random state according to the config.
     """
 
-    ###########################################################################
+    ###################################################################################
     # Lazy import on time-consuming imports
     torch_args = (
         config.random.torch_seed,
@@ -102,25 +102,29 @@ def get_random_state_setter(config) -> Callable[[], None]:
         import torch
     if config.random.numpy_seed is not None:
         import numpy as np
-    ###########################################################################
+    ###################################################################################
 
     def random_state_setter():
 
-        # Set each option
         if config.random.python_seed is not None:
             random.seed(config.random.python_seed)
+
         if config.random.numpy_seed is not None:
             np.random.seed(config.random.numpy_seed)
+
         if config.random.torch_seed is not None:
             torch.manual_seed(config.random.torch_seed)
+
         if config.random.torch_backends_cudnn_benchmark is not None:
             torch.backends.cudnn.benchmark = (
                 config.random.torch_backends_cudnn_benchmark
             )
+
         if config.random.torch_use_deterministic_algorithms is not None:
             torch.use_deterministic_algorithms(
                 config.random.torch_use_deterministic_algorithms
             )
+
         if config.random.cublas_workspace_config is not None:
             os.environ["CUBLAS_WORKSPACE_CONFIG"] = (
                 config.random.cublas_workspace_config

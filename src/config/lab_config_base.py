@@ -1,4 +1,4 @@
-"""Base class for config classes."""
+"""Base class for all config group classes."""
 
 from pydantic import BaseModel
 from pydantic import ConfigDict

@@ -20,8 +20,8 @@ __all__ = [
 class LabConfig(LabConfigBase):
     """Overall config, contains all config groups.
 
-    Setting the `{group_name}_source` attr with a valid source name will
-    auto load the corresponding yaml file into the `{group_name}` attr.
+    Setting the `{group_name}_source` attr with a valid source name will auto load the
+    corresponding yaml file into the `{group_name}` attr.
     """
 
     general_source: str
@@ -58,9 +58,8 @@ class LabConfig(LabConfigBase):
         return str(file_path)
 
     def __setattr__(self, name: str, value: Any, /) -> None:
-        """Reload config file if a source name is updated."""
+        """If changing the source name of a group, load the corresponding config file"""
         super().__setattr__(name, value)
-        # If changing the source name of a group, load the corresponding config file
         if "_source" in name:
             group_name = name.replace("_source", "")
             group_class = denonify(self.__fields__[group_name].annotation)

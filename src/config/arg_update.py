@@ -1,14 +1,13 @@
-"""Various pre- and pro- processing routines with config args."""
+"""Update config options with command-line arguments."""
 
 import argparse
 
-from src.util import get_random_state_setter, get_type_name, load_yaml_var, multiline
+from src.util import get_type_name, load_yaml_var, multiline
 
 from .lab_config import LabConfig
 
 __all__ = [
     "arg_update",
-    "setup",
 ]
 
 
@@ -21,8 +20,7 @@ def arg_update(config: LabConfig) -> LabConfig:
         description=multiline(
             """
             All opt values optional. Values are taken as strings and parsed into
-            expected types in the same way `yaml` parses strings into Python
-            objects.
+            expected types in the same way `yaml` parses strings into Python objects.
             """
         ),
     )
@@ -95,10 +93,3 @@ def arg_update(config: LabConfig) -> LabConfig:
         parser.exit()
 
     return config
-
-
-def setup(config: LabConfig):
-    """Process config options that require setup."""
-
-    # Set up random state
-    get_random_state_setter(config)()
