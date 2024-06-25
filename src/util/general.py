@@ -58,7 +58,7 @@ def load_yaml_var(v: str) -> Any:
     return safe_load(f"key: {v}")["key"]
 
 
-def get_type_name(t: type | UnionType) -> str:
+def get_type_name(t: Type | UnionType) -> str:
     """Given a type or a union type, infer the class name in str."""
     if isinstance(t, UnionType) or isinstance(t, _UnionGenericAlias):
         # UnionType -> int | None

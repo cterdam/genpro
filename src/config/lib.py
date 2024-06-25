@@ -2,10 +2,7 @@
 
 import argparse
 
-from src.util import get_random_state_setter
-from src.util import get_type_name
-from src.util import load_yaml_var
-from src.util import multiline
+from src.util import get_random_state_setter, get_type_name, load_yaml_var, multiline
 
 from .lab_config import LabConfig
 
@@ -44,11 +41,7 @@ def arg_update(config: LabConfig) -> LabConfig:
     )
 
     # Add options from each config group
-    for group_name in config.model_fields:
-
-        if "_source" in group_name:
-            # Not a config group object
-            continue
+    for group_name, group_obj in config.groups:
 
         sources_group.add_argument(
             f"--{group_name}",
@@ -58,16 +51,14 @@ def arg_update(config: LabConfig) -> LabConfig:
             help=f"Source name for the {group_name} config group.",
         )
 
-        this_config_group = getattr(config, group_name)
-
         # Arg group for this config group
-        this_arg_group = parser.add_argument_group(
+        arg_group = parser.add_argument_group(
             title=group_name,
-            description=type(this_config_group).model_json_schema()["description"],
+            description=type(group_obj).model_json_schema()["description"],
         )
 
-        for field_name, field_info in this_config_group.model_fields.items():
-            this_arg_group.add_argument(
+        for field_name, field_info in group_obj.model_fields.items():
+            arg_group.add_argument(
                 f"--{group_name}/{field_name}",
                 metavar=f"[{get_type_name(field_info.annotation)}]",
                 required=False,
@@ -79,9 +70,7 @@ def arg_update(config: LabConfig) -> LabConfig:
     args_dict = vars(parser.parse_args())
 
     # Load alternative sources for groups
-    for group_name in config.model_fields:
-        if "_source" in group_name:
-            continue
+    for group_name, _ in config.groups:
         if args_dict[group_name] is not None:
             setattr(
                 config,

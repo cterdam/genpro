@@ -1,7 +1,7 @@
 """Load & keep the config selected for each module."""
 
 from importlib.resources import files
-from typing import Any
+from typing import Any, List, Tuple
 
 from prettytable import PrettyTable
 from pydantic import Field, ValidationInfo, field_validator
@@ -30,6 +30,15 @@ class LabConfig(LabConfigBase):
     random_source: str
     random: LabConfigRandom | None = Field(default=None)
 
+    @property
+    def groups(self) -> List[Tuple[str, LabConfigBase]]:
+        """Return config group names and objs in self, excluding source fields."""
+        return [
+            (group_name, getattr(self, group_name))
+            for group_name in self.model_fields
+            if "_source" not in group_name
+        ]
+
     def __init__(self, /, **data: Any) -> None:
         """Perform init and load each config file needed."""
         super().__init__(**data)
@@ -44,9 +53,9 @@ class LabConfig(LabConfigBase):
     def expand_path(cls, val: str, info: ValidationInfo) -> str:
         """Convert a source name to the corresponding yaml file path."""
         group_name = info.field_name.replace("_source", "")
-        filename = files(f"src.config.groups.{group_name}.all") / f"{val}.yaml"
-        assert filename.is_file(), f"Did not find file at {filename}."
-        return str(filename)
+        file_path = files(f"src.config.groups.{group_name}.all") / f"{val}.yaml"
+        assert file_path.is_file(), f"Did not find file at {file_path}."
+        return str(file_path)
 
     def __setattr__(self, name: str, value: Any, /) -> None:
         """Reload config file if a source name is updated."""
@@ -67,14 +76,9 @@ class LabConfig(LabConfigBase):
         table.field_names = ["GROUP", "OPTION", "VALUE"]
         table.align = "l"
 
-        for group_name in self.model_fields:
+        for group_name, group_obj in self.groups:
 
-            if "_source" in group_name:
-                # Not a config group object
-                continue
-
-            this_group_dict = getattr(self, group_name).model_dump()
-            rows = [["", key, val] for key, val in this_group_dict.items()]
+            rows = [["", key, val] for key, val in group_obj.dict().items()]
             rows[0][0] = group_name
             last_row = rows.pop(-1)
             table.add_rows(rows)
