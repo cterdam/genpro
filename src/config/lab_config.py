@@ -62,7 +62,7 @@ class LabConfig(LabConfigBase):
         super().__setattr__(name, value)
         if "_source" in name:
             group_name = name.replace("_source", "")
-            group_class = denonify(self.__fields__[group_name].annotation)
+            group_class = denonify(self.model_fields[group_name].annotation)
             file_loc = vars(self)[name]
             vars(self)[group_name] = group_class(**load_yaml_file(file_loc))
 
@@ -77,7 +77,7 @@ class LabConfig(LabConfigBase):
 
         for group_name, group_obj in self.groups:
 
-            rows = [["", key, val] for key, val in group_obj.dict().items()]
+            rows = [["", key, val] for key, val in group_obj.model_dump().items()]
             rows[0][0] = group_name
             last_row = rows.pop(-1)
             table.add_rows(rows)

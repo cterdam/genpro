@@ -5,11 +5,11 @@ from src.util import get_random_state_setter
 from .lab_config import LabConfig
 
 __all__ = [
-    "setup",
+    "scaffold",
 ]
 
 
-def setup(config: LabConfig):
+def scaffold(config: LabConfig):
     """Process config options that require setup."""
 
     # Set up random state
