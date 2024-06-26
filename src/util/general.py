@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import getpass
 import os
 import random
@@ -24,7 +24,7 @@ __all__ = [
 def get_unique_id() -> str:
     """Prepare a unique identifier for a run."""
     _username: str = getpass.getuser()
-    _datetime: str = datetime.now().strftime("%Y%m%d-%Hh%Mm%Ss")
+    _datetime: str = datetime.now(timezone.utc).strftime("%Y%m%d-%Hh%Mm%Ss")
     _hashdigits: int = 4
     _randhash: str = uuid.uuid4().hex[-_hashdigits:]
     unique_id: str = f"{_username}-{_datetime}-{_randhash}"

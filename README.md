@@ -20,6 +20,7 @@ pip install -r requirements.txt
 
 ## TODO
 
-- use logs instead of printing
+- reproducible random setup - randomly generate seeds but set them manually
+- list all logging sinks upon initializing
 - save logs upon exit - use `atexit`
 - compute SHA256 sum of each model and write a file when uploading

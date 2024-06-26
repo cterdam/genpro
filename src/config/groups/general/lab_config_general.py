@@ -28,7 +28,7 @@ class LabConfigGeneral(LabConfigBase):
         description=multiline(
             """
             If True, appends a unique identifier to the run name, including the
-            username, timestamp, and a random hash.
+            username, the UTC timestamp, and a random hash.
             """
         ),
     )

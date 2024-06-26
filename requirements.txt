@@ -11,4 +11,5 @@ transformers==4.41.1
 torch==2.3.1
 
 # Interface
+loguru==0.7.2
 prettytable==3.10.0

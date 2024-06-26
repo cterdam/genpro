@@ -1,10 +1,4 @@
-from src.config import config
+from src.log import logger
 import random
 
-print(random.randint(1, 100))
-
-from src.util import get_random_state_setter
-
-setter = get_random_state_setter(config)
-
-setter()
+logger.info(random.randint(1, 100))
