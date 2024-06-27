@@ -13,14 +13,13 @@ pip install -r requirements.txt
 
 ## 🕹️ Use 
 
-- `py -m src.train` to directly start using the default configs.
-- Add `-h` to see all configurable options.
-- Add `--dry-run` to print out configured option values and exit.
+- `python -m src.train` to directly start using the default configs.
+  - Add `-h` to see all configurable options.
+  - Add `--dry-run` to print out configured option values and exit.
+- By default, a log file will be created at `lab/out/<project_name>/<run_name>.log`.
 
 
 ## TODO
 
-- reproducible random setup - randomly generate seeds but set them manually
-- list all logging sinks upon initializing
 - save logs upon exit - use `atexit`
 - compute SHA256 sum of each model and write a file when uploading

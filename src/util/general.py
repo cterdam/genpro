@@ -81,7 +81,7 @@ def denonify(ut: UnionType) -> NoneType | Type | UnionType:
             return Union[tuple(non_none_types)]
 
 
-def get_random_state_setter(config) -> Callable[[], None]:
+def get_random_state_setter(config, logger) -> Callable[[], None]:
     """Given the lab config, return a function that sets the random state.
 
     Arguments:
@@ -108,26 +108,53 @@ def get_random_state_setter(config) -> Callable[[], None]:
 
         if config.random.python_seed is not None:
             random.seed(config.random.python_seed)
+            logger.trace(f"Python random seed set to {config.random.python_seed}.")
 
         if config.random.numpy_seed is not None:
             np.random.seed(config.random.numpy_seed)
+            logger.trace(f"Numpy random seed set to {config.random.numpy_seed}.")
 
         if config.random.torch_seed is not None:
             torch.manual_seed(config.random.torch_seed)
+            logger.trace(f"Torch manual seed set to {config.random.torch_seed}.")
 
         if config.random.torch_backends_cudnn_benchmark is not None:
             torch.backends.cudnn.benchmark = (
                 config.random.torch_backends_cudnn_benchmark
+            )
+            logger.trace(
+                multiline(
+                    f"""
+                    Torch backends cudnn benchmark set to
+                    {config.random.torch_backends_cudnn_benchmark}.
+                    """
+                )
             )
 
         if config.random.torch_use_deterministic_algorithms is not None:
             torch.use_deterministic_algorithms(
                 config.random.torch_use_deterministic_algorithms
             )
+            logger.trace(
+                multiline(
+                    f"""
+                    Torch deterministic algorithms use set to
+                    {config.random.torch_use_deterministic_algorithms}.
+                    """
+                )
+            )
 
         if config.random.cublas_workspace_config is not None:
             os.environ["CUBLAS_WORKSPACE_CONFIG"] = (
                 config.random.cublas_workspace_config
+            )
+            logger.trace(
+                multiline(
+                    f"""
+                    Cublas workspace config set to
+                    {config.random.cublas_workspace_config}
+                    """
+                )
             )
 
     return random_state_setter
