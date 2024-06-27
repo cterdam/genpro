@@ -15,26 +15,34 @@ __all__ = [
 def scaffold(config: LabConfig):
     """Process config options that require setup."""
 
-    # Collecting msgs to be logged while logger is not set up
-    msgs = []
+    # Collect msgs to be logged while logger is not set up
+    msgs = ["Beginning run."]
 
     # Set up run name
-    if config.general.use_run_identifier:
+    if config.general.run_identifier:
         config.general.run_name += "-" + get_unique_id()
         msgs.append("Appending unique identifier to run name.")
 
+    # Set up out dir
+    if config.general.out_dir is None:
+        config.general.out_dir = (
+            files("src")
+            / ".."
+            / "out"
+            / config.general.project_name
+            / config.general.run_name
+        )
+    config.general.out_dir = config.general.out_dir.resolve()
+    msgs.append(f"Out dir set to {config.general.out_dir}")
+
     # Set up logger
-    if config.log.to_file:
-        if config.log.local_dir is None:
-            config.log.local_dir = (
-                files("src") / ".." / "out" / config.general.project_name
-            )
-        config.log.local_dir = config.log.local_dir.resolve()
     msgs.extend(update_logger(logger, config))
+
+    # Logger is set up, release all msgs so far
+    logger.trace("\n".join(msgs))
 
     # Set up random state
     get_random_state_setter(config, logger)()
 
     # Log setup msgs and resultant configs
-    logger.trace("\n".join(msgs))
     logger.info("Finished setting up all configs.\n" + str(config))

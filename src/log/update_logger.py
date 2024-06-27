@@ -51,12 +51,10 @@ def update_logger(logger, config: LabConfig) -> List[str]:
 
     # Add local file handler
     if config.log.to_file:
-        file_path = config.log.local_dir / (config.general.run_name + ".log")
+        file_path = config.general.out_dir / "log.txt"
         logger.add(file_path, format=log_format, level=log_level)
 
-        msgs.append(
-            f"Log file at {config.log.local_dir / (config.general.run_name + '.log')}"
-        )
+        msgs.append(f"Log file at {file_path}")
 
     # Print msgs if stdout sink is not configured
     if not config.log.to_stdout:
