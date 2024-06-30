@@ -19,5 +19,5 @@ class LabConfigLog(LabConfigBase):
 
     to_file: bool = Field(
         default=True,
-        description="If true, writes logs to a local file <run_name>.log.",
+        description="If true, writes logs to a local file log.txt in out dir.",
     )

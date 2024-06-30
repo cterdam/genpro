@@ -78,8 +78,10 @@ class LabConfig(LabConfigBase):
         table = PrettyTable()
 
         table.title = "Config"
-        table.field_names = ["GROUP", "OPTION", "VALUE"]
         table.align = "l"
+        table.field_names = ["GROUP", "OPTION", "VALUE"]
+        table.max_width["OPTION"] = 34
+        table.max_width["VALUE"] = 37
 
         for group_name, group_obj in self.groups:
 
