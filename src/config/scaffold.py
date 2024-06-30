@@ -16,12 +16,13 @@ def scaffold(config: LabConfig):
     """Process config options that require setup."""
 
     # Collect msgs to be logged while logger is not set up
-    msgs = ["Beginning run."]
+    msgs = ["Beginning run.", ""]
 
     # Set up run name
     if config.general.run_identifier:
         config.general.run_name += "-" + get_unique_id()
         msgs.append("Appending unique identifier to run name.")
+    msgs.append(f"Run name set to {config.general.run_name}")
 
     # Set up out dir
     if config.general.out_dir is None:
@@ -36,6 +37,7 @@ def scaffold(config: LabConfig):
     msgs.append(f"Out dir set to {config.general.out_dir}")
 
     # Set up logger
+    msgs.append("")
     msgs.extend(update_logger(logger, config))
 
     # Logger is set up, release all msgs so far

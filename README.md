@@ -21,5 +21,6 @@ pip install -r requirements.txt
 
 ## TODO
 
+- see if wandb.magic will work once other wandb components are complete
 - save logs upon exit - use `atexit`
 - compute SHA256 sum of each model and write a file when uploading

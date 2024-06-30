@@ -21,3 +21,8 @@ class LabConfigLog(LabConfigBase):
         default=True,
         description="If true, writes logs to a local file log.txt in out dir.",
     )
+
+    to_wandb: bool = Field(
+        default=True,
+        description="If true, reports logs to wandb.",
+    )

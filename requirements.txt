@@ -10,6 +10,7 @@ ulid-py==1.1.0
 # Training
 transformers==4.41.1
 torch==2.3.1
+wandb==0.17.3
 
 # Interface
 loguru==0.7.2
