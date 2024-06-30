@@ -1,5 +1,6 @@
 """Update the logger with runtime configs."""
 
+from importlib.resources import files
 import os
 import sys
 from typing import List
@@ -74,13 +75,19 @@ def update_logger(logger, config: LabConfig) -> List[str]:
         # Suppress W&B logs
         os.environ["WANDB_SILENT"] = "true"
 
-        # Create run
+        # Create W&B run
         wandb.init(
             project=config.general.project_name,
             name=config.general.run_name,
             id=config.general.run_name,
             dir=config.general.out_dir,
             config=config.to_config_dict(),
+        )
+
+        # Save all source code to W&B
+        wandb.run.log_code(
+            root=files("src"),
+            name=f"source_{config.general.project_name}_{config.general.run_name}",
         )
 
         msgs.append(
