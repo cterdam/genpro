@@ -64,6 +64,7 @@ def update_logger(logger, config: LabConfig) -> List[str]:
     # Add W&B handler
     if config.log.to_wandb:
 
+        # Must use shell env var to login to W&B
         assert "WANDB_API_KEY" in os.environ
         import wandb
 
@@ -79,7 +80,7 @@ def update_logger(logger, config: LabConfig) -> List[str]:
             name=config.general.run_name,
             id=config.general.run_name,
             dir=config.general.out_dir,
-            config=config,
+            config=config.to_config_dict(),
         )
 
         msgs.append(

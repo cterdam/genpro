@@ -1,10 +1,12 @@
 """Load & keep the config selected for each module."""
 
+from collections import defaultdict
 from importlib.resources import files
 from typing import Any, List, Tuple
 
 from prettytable import PrettyTable
 from pydantic import Field, ValidationInfo, field_validator
+from typing_extensions import Dict
 
 from src.config.lab_config_base import LabConfigBase
 from src.util import denonify, load_yaml_file
@@ -92,3 +94,11 @@ class LabConfig(LabConfigBase):
             table.add_row(last_row, divider=True)
 
         return table.get_string()
+
+    def to_config_dict(self) -> Dict[str, Any]:
+        """Output a nested dict of all configs."""
+        result = defaultdict(dict)
+        for group_name, group_obj in self.groups:
+            for field_name in group_obj.model_fields:
+                result[group_name][field_name] = getattr(group_obj, field_name)
+        return result
