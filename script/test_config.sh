@@ -1,4 +1,4 @@
-python -m src.train\
+python -m src\
     --dry-run \
     --general/run_name \"null\" \
     --random deterministic \

@@ -42,8 +42,8 @@ class LabConfigGeneral(LabConfigBase):
             """
             Directory to host any outputs of this run, including logs. Notation is
             relative to lauching command. Will be created (with any parent dirs) if
-            non-existent. If None, Defaults to (repo root)
-            `lab/out/<project_name>/<run_name>`.
+            non-existent. If None, Defaults to (from repo root)
+            `out/<project_name>/<run_name>`.
             """
         ),
     )

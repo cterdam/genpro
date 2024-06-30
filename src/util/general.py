@@ -5,7 +5,7 @@ import random
 import textwrap
 from types import NoneType, UnionType
 from typing import Any, Callable, Type, Union, _UnionGenericAlias, get_args
-import uuid
+import ulid
 
 from yaml import safe_load
 
@@ -23,10 +23,9 @@ __all__ = [
 
 def get_unique_id() -> str:
     """Prepare a unique identifier for a run."""
-    _username: str = getpass.getuser()
-    _datetime: str = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
-    _hashdigits: int = 4
-    _randhash: str = uuid.uuid4().hex[-_hashdigits:]
+    _username: str = getpass.getuser()[:4]
+    _datetime: str = datetime.now(timezone.utc).strftime("%m%d-%H%M")
+    _randhash: str = ulid.new().str[-4:]
     unique_id: str = f"{_username}-{_datetime}-{_randhash}"
     return unique_id
 

@@ -13,10 +13,10 @@ pip install -r requirements.txt
 
 ## 🕹️ Use 
 
-- `python -m src.train` to directly start using the default configs.
+- `python -m src` to directly start using the default configs.
   - Add `-h` to see all configurable options.
   - Add `--dry-run` to print out configured option values and exit.
-- By default, a log file will be created at `lab/out/<project_name>/<run_name>.log`.
+- By default, a log file will be created at `out/<project_name>/<run_name>/log.txt`.
 
 
 ## TODO
