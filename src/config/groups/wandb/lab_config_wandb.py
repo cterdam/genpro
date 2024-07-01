@@ -19,14 +19,14 @@ class LabConfigWandb(LabConfigBase):
         description=multiline(
             """
             Username or team name for wandb. If unset, will be default entity associated
-            with login.
+            with login credentials.
             """
         ),
     )
 
     save_code: bool = Field(
         default=True,
-        description="If true, saves all .py source code files in repo on wandb.",
+        description="If true, saves all `.py` source code files in repo on wandb.",
     )
 
     group: str | None = Field(

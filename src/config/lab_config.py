@@ -93,7 +93,7 @@ class LabConfig(LabConfigBase):
 
         for group_name, group_obj in self.groups:
 
-            rows = [["", key, val] for key, val in group_obj.model_dump().items()]
+            rows = [["", key, repr(val)] for key, val in group_obj.model_dump().items()]
             rows[0][0] = group_name
             last_row = rows.pop(-1)
             table.add_rows(rows)

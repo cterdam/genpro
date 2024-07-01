@@ -4,7 +4,7 @@ import os
 import random
 import textwrap
 from types import NoneType, UnionType
-from typing import Any, Callable, Type, Union, _UnionGenericAlias, get_args
+from typing import Any, Callable, Literal, Type, Union, _UnionGenericAlias, get_args
 
 import ulid
 from yaml import safe_load
@@ -59,7 +59,10 @@ def load_yaml_var(v: str) -> Any:
 
 
 def get_type_name(t: Type | UnionType) -> str:
-    """Given a type or a union type, infer the class name in str."""
+    """Given a type, infer the class name in str."""
+    if hasattr(t, "__origin__") and t.__origin__ is Literal:
+        # Literal type
+        return "Literal[" + ", ".join(repr(arg) for arg in get_args(t)) + "]"
     if isinstance(t, UnionType) or isinstance(t, _UnionGenericAlias):
         # UnionType -> int | None
         # _UnionGenericAlias -> typing.Optional[int]
