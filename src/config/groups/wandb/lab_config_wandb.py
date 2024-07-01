@@ -1,5 +1,6 @@
 """Config about logging."""
 
+from typing import List
 from pydantic import Field
 
 from src.config.lab_config_base import LabConfigBase
@@ -26,4 +27,14 @@ class LabConfigWandb(LabConfigBase):
     save_code: bool = Field(
         default=True,
         description="If true, saves all .py source code files in repo on wandb.",
+    )
+
+    group: str | None = Field(
+        default=None,
+        description="Optional group name for the run on wandb.",
+    )
+
+    tags: List[str] = Field(
+        default=[],
+        description="Optional tags for the run on wandb.",
     )

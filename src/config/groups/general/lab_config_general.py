@@ -1,6 +1,7 @@
 """Config about general experiment setup."""
 
 from pathlib import Path
+from typing import Literal
 
 from pydantic import Field
 
@@ -43,8 +44,18 @@ class LabConfigGeneral(LabConfigBase):
             """
             Directory to host any outputs of this run, including logs. Notation is
             relative to lauching command. Will be created (with any parent dirs) if
-            non-existent. If None, Defaults to (from repo root)
+            non-existent. If None, defaults to (from repo root)
             `out/<project_name>/<run_name>`.
+            """
+        ),
+    )
+
+    task: Literal["debug", "train", "eval"] = Field(
+        default="debug",
+        description=multiline(
+            """
+            Task to perform. [train] Train a model. [eval] Eval a model. [debug] For
+            debugging purposes, do nothing.
             """
         ),
     )

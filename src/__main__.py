@@ -5,5 +5,5 @@ import random
 logger.info(f"Random number {random.randint(1, 100)} generated.")
 
 
-# get job type and set in wandb init
 # wandb handle log entries
+# Literal type does not show details in argparse -h

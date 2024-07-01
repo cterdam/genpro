@@ -83,6 +83,9 @@ def update_logger(logger, config: LabConfig) -> List[str]:
             id=config.general.run_name,
             dir=config.general.out_dir,
             config=config.to_config_dict(),
+            job_type=config.general.task,
+            group=config.wandb.group,
+            tags=config.wandb.tags,
         )
 
         msgs.append(

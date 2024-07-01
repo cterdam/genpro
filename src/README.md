@@ -46,16 +46,16 @@ In decreasing levels of precedence, these are:
 ### Parsing
 
 - During argparse, each option is available as a command-line argument.
-  - All values are taken as strings and parsed into expected types in the same
-    way `yaml` parses strings into Python objects.
-  - Any option not set via command-line arguments has the value of `None` in argparse,
-    which is used to prevent it from overwriting the value taken from other sources.
-  - In order to set a value to `None`, the input string should be `null` or `Null`.
-    - There doesn't seem to be a way to set an option to the string `null`.
-  - In order to force a numeric string to be string, the input string should be
-    surrounded with quotation marks.
-    - Depending on the shell, while invoking the script, an escape might be needed for
-      the quotation marks to be interpreted as part of the string.
+
+- Any option not set via command-line arguments has the value of `None` in argparse,
+  which is used to prevent it from overwriting the value taken from other sources.
+
+- All values are taken as strings and parsed into expected types in the same way `yaml`
+  parses strings into Python objects. Therefore:
+  - In order to set an option to `None`, the input should be `null`.
+  - In order to set an option to the string `null`, the input should be `\"null\"`.
+  - In order to force a numeric string to be string, the input should be surrounded with
+    quotation marks.
 
 - Config options are processed after parsing, a processed called scaffolding.
   - In this process, their values could change.
@@ -94,11 +94,25 @@ And that's it!
 
 ## 🪵 log
 
-- Logs will appear at a number of destinations by default:
+- Logs can appear at a number of destinations:
   - Stdout
-  - Local log file `log.txt` in out dir.
+  - Local log file `log.txt` in out dir
+  - Wandb
 
 - To log msgs, simply `from src.log import logger` and use `logger` as in `loguru`.
+
+### Wandb logging
+
+- To use wandb logging, the `WANDB_API_KEY` shell variable must be set with a valid API
+  key.
+
+- Logs will appear under the given run name and project name in the wandb entity chosen
+  with the API key.
+
+- The job type of the wandb run will be the same as the task in the config.
+
+- By default, all `.py` files in the repo at this time of the run will also be saved in
+  the wandb run as an artifact.
 
 ## 🧮 data
 

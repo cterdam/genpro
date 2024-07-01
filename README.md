@@ -17,6 +17,8 @@ pip install -r requirements.txt
   - Add `-h` to see all configurable options.
   - Add `--dry-run` to print out configured option values and exit.
 - By default, a log file will be created at `out/<project_name>/<run_name>/log.txt`.
+- The run will also be logged on wandb. Make sure the `WANDB_API_KEY` shell variable is
+  set.
 
 
 ## TODO
