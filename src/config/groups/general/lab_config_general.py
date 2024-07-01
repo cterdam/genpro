@@ -6,7 +6,7 @@ from types import NoneType
 from pydantic import Field
 
 from src.config.lab_config_base import LabConfigBase
-from src.util import multiline
+from src.util import get_non_special_regex, multiline
 
 __all__ = [
     "LabConfigGeneral",
@@ -18,12 +18,14 @@ class LabConfigGeneral(LabConfigBase):
 
     project_name: str = Field(
         default="lab",
-        description="Name of the current project.",
+        description="Name of the current project. Cannot contain special characters.",
+        pattern=get_non_special_regex(),
     )
 
     run_name: str = Field(
         default="run",
-        description="Name of the current run.",
+        description="Name of the current run. Cannot contain special characters.",
+        pattern=get_non_special_regex(),
     )
 
     run_identifier: bool = Field(

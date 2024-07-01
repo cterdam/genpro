@@ -5,8 +5,8 @@ import random
 import textwrap
 from types import NoneType, UnionType
 from typing import Any, Callable, Type, Union, _UnionGenericAlias, get_args
-import ulid
 
+import ulid
 from yaml import safe_load
 
 
@@ -18,6 +18,7 @@ __all__ = [
     "get_type_name",
     "denonify",
     "get_random_state_setter",
+    "get_non_special_regex",
 ]
 
 
@@ -157,3 +158,12 @@ def get_random_state_setter(config, logger) -> Callable[[], None]:
             )
 
     return random_state_setter
+
+
+def get_non_special_regex() -> str:
+    """
+    Returns a regex pattern that matches any string with at least 1 char which does not
+    include any special chars.
+    """
+    pattern = r'^[^ `~!@#$%^&*()\[\]{}\\|;:\'",<.>/?]+$'
+    return pattern
