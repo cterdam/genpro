@@ -38,3 +38,8 @@ class LabConfigWandb(LabConfigBase):
         default=[],
         description="Optional tags for the run on wandb.",
     )
+
+    notes: str | None = Field(
+        default=None,
+        description="Optional notes for the run on wandb.",
+    )

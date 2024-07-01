@@ -86,6 +86,7 @@ def update_logger(logger, config: LabConfig) -> List[str]:
             job_type=config.general.task,
             group=config.wandb.group,
             tags=config.wandb.tags,
+            notes=config.wandb.notes,
         )
 
         msgs.append(
