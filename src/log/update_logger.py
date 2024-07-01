@@ -77,17 +77,12 @@ def update_logger(logger, config: LabConfig) -> List[str]:
 
         # Create W&B run
         wandb.init(
+            entity=config.wandb.entity,
             project=config.general.project_name,
             name=config.general.run_name,
             id=config.general.run_name,
             dir=config.general.out_dir,
             config=config.to_config_dict(),
-        )
-
-        # Save all source code to W&B
-        wandb.run.log_code(
-            root=files("src"),
-            name=f"source_{config.general.project_name}_{config.general.run_name}",
         )
 
         msgs.append(
@@ -103,6 +98,27 @@ def update_logger(logger, config: LabConfig) -> List[str]:
                 is_url=True,
             )
         )
+
+        # Save all source code to W&B
+        if config.wandb.save_code:
+            wandb.run.log_code(
+                root=files("src"),
+                name=f"CODE_{config.general.run_name}",
+            )
+
+            msgs.append(
+                "\nSource code on wandb at "
+                + multiline(
+                    f"""
+                    https://wandb.ai
+                    /{wandb.run.entity}
+                    /{wandb.run.project}
+                    /artifacts/code
+                    /CODE_{config.general.run_name}/v0
+                    """,
+                    is_url=True,
+                )
+            )
 
     # Return logging msgs for caller to log
     if not config.log.to_stdout:

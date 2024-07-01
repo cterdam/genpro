@@ -5,7 +5,5 @@ import random
 logger.info(f"Random number {random.randint(1, 100)} generated.")
 
 
-# validate run name CANNOT CONTAIN /\#?%:
 # get job type and set in wandb init
-
 # wandb handle log entries

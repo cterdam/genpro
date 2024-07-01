@@ -14,6 +14,7 @@ from src.util import denonify, load_yaml_file
 from .groups.general.lab_config_general import LabConfigGeneral
 from .groups.log.lab_config_log import LabConfigLog
 from .groups.random.lab_config_random import LabConfigRandom
+from .groups.wandb.lab_config_wandb import LabConfigWandb
 
 __all__ = [
     "LabConfig",
@@ -36,6 +37,9 @@ class LabConfig(LabConfigBase):
     log_source: str
     log: LabConfigLog | None = Field(default=None)
 
+    wandb_source: str
+    wandb: LabConfigWandb | None = Field(default=None)
+
     @property
     def groups(self) -> List[Tuple[str, LabConfigBase]]:
         """Return config group names and objs in self, excluding source fields."""
@@ -51,11 +55,13 @@ class LabConfig(LabConfigBase):
         self.general = LabConfigGeneral(**load_yaml_file(self.general_source))
         self.random = LabConfigRandom(**load_yaml_file(self.random_source))
         self.log = LabConfigLog(**load_yaml_file(self.log_source))
+        self.wandb = LabConfigWandb(**load_yaml_file(self.wandb_source))
 
     @field_validator(
         "general_source",
         "random_source",
         "log_source",
+        "wandb_source",
     )
     @classmethod
     def expand_path(cls, val: str, info: ValidationInfo) -> str:

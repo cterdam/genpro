@@ -35,13 +35,6 @@ In decreasing levels of precedence, these are:
 
 - Run-time command-line argument `--<group_name>/<option_name> <value>`
   - **This has the highest precedence.**
-  - All values are taken as strings and parsed into expected types in the same
-    way `yaml` parses strings into Python objects. Therefore:
-    - In order to set a value to `None`, the input string should be `null` or `Null`.
-    - In order to force a numeric string to be string, the input string should be
-      surrounded with quotation marks.
-      - Depending on the shell, while invoking the script, an escape might be needed for
-        the quotation marks to be interpreted as part of the string.
 
 - Source selected via a command-line argument `--<group_name> <source_name>`
 
@@ -53,10 +46,16 @@ In decreasing levels of precedence, these are:
 ### Parsing
 
 - During argparse, each option is available as a command-line argument.
+  - All values are taken as strings and parsed into expected types in the same
+    way `yaml` parses strings into Python objects.
   - Any option not set via command-line arguments has the value of `None` in argparse,
     which is used to prevent it from overwriting the value taken from other sources.
-  - This is different from the user-input string of `null`. So, by setting an option to
-    `null`, users can still manually a config option to be `None`.
+  - In order to set a value to `None`, the input string should be `null` or `Null`.
+    - There doesn't seem to be a way to set an option to the string `null`.
+  - In order to force a numeric string to be string, the input string should be
+    surrounded with quotation marks.
+    - Depending on the shell, while invoking the script, an escape might be needed for
+      the quotation marks to be interpreted as part of the string.
 
 - Config options are processed after parsing, a processed called scaffolding.
   - In this process, their values could change.
@@ -85,7 +84,8 @@ And that's it!
 ### Adding a new option within an existent group
 
 - Modify the group schema to add the new option as a field.
-  - If it can only take a few values, use `Literal` as its type.
+  - If it can only take a few values, use `Literal` or other Pydantic verification
+    schemes.
   - If this is a shell variable, its default factory should fetch it from shell.
 
 - If this value necessitates postprocessing, modify `src/config/scaffold.py`.

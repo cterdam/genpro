@@ -1,7 +1,6 @@
 """Config about general experiment setup."""
 
 from pathlib import Path
-from types import NoneType
 
 from pydantic import Field
 
@@ -32,13 +31,13 @@ class LabConfigGeneral(LabConfigBase):
         default=True,
         description=multiline(
             """
-            If True, appends a unique identifier to the run name, including the
+            If true, appends a unique identifier to the run name, including the
             username, the UTC timestamp, and a random hash.
             """
         ),
     )
 
-    out_dir: Path | NoneType = Field(
+    out_dir: Path | None = Field(
         default=None,
         description=multiline(
             """

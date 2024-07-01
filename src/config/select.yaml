@@ -1,3 +1,4 @@
 general: default
 random: default
 log: default
+wandb: default
